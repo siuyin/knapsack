@@ -27,8 +27,9 @@ func TestPack(t *testing.T) {
 		d{12, 0, []Item{}},
 		d{13, 0, []Item{}},
 	}
+	m := newMemo()
 	for i := range ds {
-		v, o := Pack(c1, ds[i].b) // output
+		v, o := Pack(c1, ds[i].b, m) // output
 		if fmt.Sprintf("%v", o) != fmt.Sprintf("%v", ds[i].o) {
 			t.Errorf("case %d: budget: %d expected %v got %v", i, ds[i].b, ds[i].o, o)
 		}
