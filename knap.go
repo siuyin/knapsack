@@ -18,6 +18,7 @@ func Pack(items []Item, budget int, m memo) (int, []Item) {
 	}
 	v, i, ok := m.get(items, budget)
 	if ok {
+		//fmt.Printf("DEBUG: getting %v, %d\n", items, budget)
 		return v, i
 	}
 	if items[0].Cost > budget { // item 0 is too costly, pack remaining items.
