@@ -13,6 +13,8 @@ const budget = 15
 func main() {
 	fmt.Println("Big knapsack with lots of items to choose from.")
 	fmt.Printf("budget: %d\n", budget)
+	//rand.Seed(time.Now().UnixNano())
+	rand.Seed(1)
 	for i := 5; i < 100; i += 5 {
 		items := genItems(i, 10, 20)
 		m := knap.NewMemo()
