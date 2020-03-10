@@ -1,7 +1,11 @@
 // Package knap addresses the knapsack packing problem.
 package knap
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/siuyin/dflt"
+)
 
 type Item struct {
 	Name  string
@@ -12,14 +16,17 @@ type Item struct {
 // Pack takes a slice of items and a cost budget
 // and returns total value
 // and a slice of references to items selected.
-func Pack(items []Item, budget int, m memo) (int, []Item) {
+func Pack(items []Item, budget int, m Memo) (int, []Item) {
 	if len(items) == 0 {
 		return 0, []Item{}
 	}
-	v, i, ok := m.get(items, budget)
-	if ok {
-		//fmt.Printf("DEBUG: getting %v, %d\n", items, budget)
-		return v, i
+	useMemo := dflt.EnvString("USE_MEMO", "1")
+	if useMemo == "1" {
+		v, i, ok := m.get(items, budget)
+		if ok {
+			//fmt.Printf("DEBUG: getting %v, %d\n", items, budget)
+			return v, i
+		}
 	}
 	if items[0].Cost > budget { // item 0 is too costly, pack remaining items.
 		v, i := Pack(items[1:], budget, m)
@@ -48,19 +55,19 @@ type ans struct {
 	i []Item
 }
 
-type memo map[string]ans
+type Memo map[string]ans
 
-func newMemo() memo {
-	m := memo(make(map[string]ans))
+func NewMemo() Memo {
+	m := Memo(make(map[string]ans))
 	return m
 }
 
-func (m memo) put(items []Item, budget int, valAns int, itemsAns []Item) {
+func (m Memo) put(items []Item, budget int, valAns int, itemsAns []Item) {
 	s := fmt.Sprintf("%d,%d", len(items), budget)
 	m[s] = ans{valAns, itemsAns}
 }
 
-func (m memo) get(items []Item, budget int) (int, []Item, bool) {
+func (m Memo) get(items []Item, budget int) (int, []Item, bool) {
 	s := fmt.Sprintf("%d,%d", len(items), budget)
 	a, ok := m[s]
 	if !ok {
